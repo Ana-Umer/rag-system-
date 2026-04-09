@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple RAG System | AI Knowledge Assistant</title>
+  <meta name="description" content="Upload documents and ask questions. Powered by Retrieval-Augmented Generation with LangChain, FAISS, and Groq." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+<div id="app">
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🧠</div>
+      <div>
+        <div class="logo-text">RAG Assistant</div>
+        <div class="logo-sub">Retrieval-Augmented Generation</div>
+      </div>
+    </div>
+    <div class="header-badge">
+      <div class="status-dot"></div>
+      <span id="header-status">Ready</span>
+    </div>
+  </header>
+
+  <!-- Sidebar: Knowledge Base -->
+  <aside>
+    <div>
+      <div class="section-label">📚 Knowledge Base</div>
+      <div class="stats-grid" style="margin-top:8px;">
+        <div class="stat-card">
+          <div class="stat-value" id="doc-count">0</div>
+          <div class="stat-label">Documents</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="chunk-count">0</div>
+          <div class="stat-label">Chunks</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Drop zone -->
+    <div>
+      <div class="section-label">Upload File</div>
+      <div id="drop-zone">
+        <div class="dz-icon">📄</div>
+        <div class="dz-title">Drop file here</div>
+        <div class="dz-sub">.txt or .pdf supported</div>
+      </div>
+      <input type="file" id="file-input" accept=".txt,.pdf" />
+      <div class="file-status" id="file-status">
+        <span>✅</span><span id="file-status-text"></span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Paste text -->
+    <div>
+      <div class="section-label">Paste Text</div>
+      <div class="card" style="padding:12px;">
+        <input type="text" id="source-name" placeholder="Source name (e.g. company-policy)" />
+        <textarea id="paste-text" placeholder="Paste your document text here…"></textarea>
+        <button class="btn btn-primary" id="ingest-text-btn" onclick="ingestText()" style="margin-top:10px;">
+          ➕ Add to Knowledge Base
+        </button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Reset -->
+    <div>
+      <div class="section-label">Danger Zone</div>
+      <button class="btn btn-danger" style="width:100%;" onclick="resetKB()">
+        🗑️ Clear Knowledge Base
+      </button>
+    </div>
+  </aside>
+
+  <!-- Chat panel -->
+  <div class="chat-panel">
+    <div class="chat-messages" id="chat-messages">
+      <div class="welcome" id="welcome-screen">
+        <div class="welcome-icon">🔍</div>
+        <h2>Ask questions about your documents</h2>
+        <p>Upload files or paste text into the left panel, then ask anything — the AI will answer using only your content.</p>
+        <div class="welcome-pills">
+          <div class="pill" onclick="setQuestion('What are the main topics covered?')">📋 Main topics</div>
+          <div class="pill" onclick="setQuestion('Summarize the key points.')">📝 Key points</div>
+          <div class="pill" onclick="setQuestion('What are the important rules or policies?')">📜 Rules & policies</div>
+          <div class="pill" onclick="setQuestion('What should I know first?')">🎯 Quick overview</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <div class="input-row">
+        <textarea id="question-input" rows="1" placeholder="Ask a question about your documents…" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button id="send-btn" onclick="sendQuestion()" title="Send (Enter)">➤</button>
+      </div>
+      <div class="input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script src="/app.js"></script>
+</body>
+</html>
